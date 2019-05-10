@@ -23,6 +23,7 @@
 
 #include <stdexcept>
 #include <new>
+#include <math.h>
 
 #include "gts/platform/Machine.h"
 #include "gts/platform/Memory.h"
