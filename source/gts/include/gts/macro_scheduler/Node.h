@@ -151,8 +151,8 @@ public: // MUTATORS
 
         void* pBuffer = m_pMyScheduler->_allocateWorkload(
             sizeof(TWorkload) +
-                sizeof(std::decay_t<TFunc>) +
-                sizeof(std::tuple<std::decay_t<TArgs>...>),
+                sizeof(std::decay<TFunc>) +
+                sizeof(std::tuple<std::decay<TArgs>...>),
             alignof(TWorkload));
 
         TWorkload* pWorkload = new (pBuffer) TWorkload(
