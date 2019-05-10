@@ -26,6 +26,10 @@
 #include "gts/platform/Atomic.h"
 #include "gts/containers/Vector.h"
 
+#if GTS_APPLE
+#include <pthread.h>
+#endif
+
 namespace gts {
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -62,7 +66,29 @@ using ThreadFunction     = unsigned long (__stdcall*)(void* pArg);
 
 #elif GTS_APPLE
 
-#error "Missing mac thread implementation."
+//#error "Missing mac thread implementation."
+using ThreadHandle       = void*;
+using ConditionVarHandle = void*;
+using EventHandle        = void*;
+    
+#ifdef GTS_ARCH_X64
+struct alignas(uintptr_t)MutexHandle
+{
+    operator void*() { return &data; }
+    uint8_t data[40];
+};
+#else
+struct alignas(uintptr_t)MutexHandle
+{
+    operator void*() { return &data; }
+    uint8_t data[24];
+};
+#endif
+    
+using ThreadId           = uint32_t;
+using ThreadFunction     = unsigned long (__stdcall*)(void* pArg);
+#define GTS_THREAD_DECL(name) unsigned long __stdcall name(void* pArg)
+#define GTS_THREAD_DEFN(cls, name) unsigned long cls::name(void* pArg)
 
 #else // CUSTOM
 
