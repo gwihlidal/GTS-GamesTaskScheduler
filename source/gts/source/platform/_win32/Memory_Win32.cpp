@@ -22,6 +22,8 @@
 #include "gts/platform/Memory.h"
 #include "gts/platform/Assert.h"
 
+#if GTS_WINDOWS
+
 #include "Windows.h"
 
 namespace gts {
@@ -190,3 +192,5 @@ bool Memory::osFree(void* ptr, uint32_t length, FreeType type)
 }
 
 } // namespace gts
+
+#endif

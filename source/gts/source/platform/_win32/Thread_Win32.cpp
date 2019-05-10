@@ -21,6 +21,8 @@
  ******************************************************************************/
 #include "gts/platform/Thread.h"
 
+#if GTS_WINDOWS
+
 #include <Windows.h>
 #include <processthreadsapi.h>
 
@@ -356,3 +358,5 @@ void BinarySemaphore::signal()
 }
 
 } // namespace gts
+
+#endif
