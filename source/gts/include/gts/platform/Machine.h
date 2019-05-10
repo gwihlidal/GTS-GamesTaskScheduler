@@ -42,26 +42,6 @@
         #define GTS_ARCH_X86 1
     #else
         #define GTS_ARCH_X86 1
-    #endif 
-
-#elif defined(__GNUG__)
-
-    // C++11 support
-    #if __GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 8)
-        #error "Requires at least GCC compiler 4.8"
-    #endif
-
-    #define GTS_GCC 1
-
-    #if defined(__x86_64__)
-        #define GTS_ARCH_X64 1
-        #define GTS_ARCH_X86 1
-    #elif defined(__i386__)
-        #define GTS_ARCH_X86 1
-    #elif defined(__aarch64__)
-        #define GTS_ARCH_ARM64 1
-    #elif defined(__arm__)
-        #define GTS_ARCH_ARM32 1
     #endif
 
 #elif defined(__clang__)
@@ -83,6 +63,26 @@
         #define GTS_ARCH_ARM64 1
     #elif defined(__arm__)
         #define GTS_ARCH_ARM 1
+        #define GTS_ARCH_ARM32 1
+    #endif
+
+#elif defined(__GNUG__)
+
+    // C++11 support
+    #if __GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 8)
+        #error "Requires at least GCC compiler 4.8"
+    #endif
+
+    #define GTS_GCC 1
+
+    #if defined(__x86_64__)
+        #define GTS_ARCH_X64 1
+        #define GTS_ARCH_X86 1
+    #elif defined(__i386__)
+        #define GTS_ARCH_X86 1
+    #elif defined(__aarch64__)
+        #define GTS_ARCH_ARM64 1
+    #elif defined(__arm__)
         #define GTS_ARCH_ARM32 1
     #endif
 
@@ -264,23 +264,37 @@ GTS_INLINE void memoryFence()
     #define GTS_LINUX 1
     #define GTS_POSIX 1
 #elif defined(__APPLE__)
-    #define GTS_MAC 1
+    #define GTS_APPLE 1
     #define GTS_POSIX 1
 #endif
 
-#ifdef GTS_WINDOWS
+#define GTS_ALIGNED_MALLOC(size, alignment) alignedMalloc(size, alignment)
+#define GTS_ALIGNED_FREE(ptr) alignedFree(ptr)
 
-    #define GTS_ALIGNED_MALLOC(size, alignment) _aligned_malloc(size, alignment)
-    #define GTS_ALIGNED_FREE(ptr) _aligned_free(ptr)
-
+namespace gts {
+    
+GTS_INLINE void* alignedMalloc(size_t size, size_t alignment)
+{
+#if GTS_WINDOWS
+    return _aligned_malloc(size, alignment);
 #elif GTS_LINUX || GTS_APPLE
-
-    #define GTS_ALIGNED_MALLOC(size, alignment) posix_memalign(size, alignment)
-    #define GTS_ALIGNED_FREE(ptr) free(ptr)
-
+    void* ptr = nullptr;
+    posix_memalign(&ptr, alignment, size);
+    return ptr;
 #else
-
-    #define GTS_ALIGNED_MALLOC #error "not implemented"
-    #define GTS_ALIGNED_FREE #error "not implemented"
-
+    #error "not implemented"
 #endif
+}
+
+GTS_INLINE void alignedFree(void* ptr)
+{
+#if GTS_WINDOWS
+    _aligned_free(ptr);
+#elif GTS_LINUX || GTS_APPLE
+    free(ptr);
+#else
+    #error "not implemented"
+#endif
+}
+
+} // namespace gts

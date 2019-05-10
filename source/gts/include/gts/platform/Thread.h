@@ -60,7 +60,7 @@ using ThreadFunction     = unsigned long (__stdcall*)(void* pArg);
 
 #error "Missing Linux thread implementation."
 
-#elif GTS_MAC
+#elif GTS_APPLE
 
 #error "Missing mac thread implementation."
 
