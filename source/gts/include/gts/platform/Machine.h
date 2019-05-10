@@ -161,7 +161,7 @@
 
 #elif GTS_CLANG
 
-#include <intrin.h>
+#include <x86intrin.h>
 
 #define GTS_INLINE inline
 #define GTS_FORCE_INLINE __attribute__((always_inline))
