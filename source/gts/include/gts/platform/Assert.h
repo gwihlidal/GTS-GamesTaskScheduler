@@ -49,7 +49,11 @@ GTS_INLINE void _assert(
         if (hook)
         {
             static char LOG_BUFFER[2048];
+        #ifdef __APPLE__
+            sprintf(LOG_BUFFER, "%s, FILE: %s file (%d)", exp, file, line);
+        #else
             sprintf_s(LOG_BUFFER, "%s, FILE: %s file (%d)", exp, file, line);
+        #endif
             hook(LOG_BUFFER);
         }
         else
