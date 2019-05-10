@@ -48,7 +48,7 @@ const float EWMA_COEFFICIENT = 0.2f;
  *  A thread backoff mechanism. Uses exponentially weighted moving averages
  *  to backoff in the following manner:
  *  1) Pause
- *  2) Yeild
+ *  2) Yield
  *  3) Suspend
  */
 class Backoff
